@@ -105,7 +105,7 @@ export function useBaseQuery<
   })
 
   const suspense = () => {
-    return new Promise<QueryObserverResult<TData, TError>>((resolve) => {
+    return new Promise<QueryObserverResult<TData, TError>>((resolve, reject) => {
       let stopWatch = noop
       const run = () => {
         if (defaultedOptions.value.enabled !== false) {
@@ -114,7 +114,7 @@ export function useBaseQuery<
           )
           if (optimisticResult.isStale) {
             stopWatch()
-            resolve(observer.fetchOptimistic(defaultedOptions.value))
+            observer.fetchOptimistic(defaultedOptions.value).then(resolve, reject)
           } else {
             stopWatch()
             resolve(optimisticResult)
